@@ -9,7 +9,15 @@ public:
 	ScreenPoint() : X(0), Y(0) { }
 	explicit ScreenPoint(int InX, int InY) : X(InX), Y(InY) { }
 	explicit ScreenPoint(float InX, float InY) : X(Math::RoundToInt(InX)), Y(Math::RoundToInt(InY)) {}
-	explicit ScreenPoint(const Vector2& InPos) : X(Math::RoundToInt(InPos.X)), Y(Math::RoundToInt(InPos.Y)) {}
+	explicit ScreenPoint(const Vector2& InPos) : 
+		X(Math::RoundToInt(InPos.X)), Y(Math::RoundToInt(InPos.Y)) {}
+
+	explicit ScreenPoint(const Vector2& InPos, const Vector2 ScreenSize)
+	{
+		X = InPos.X + ((ScreenSize.X - 1) * 0.5);
+		Y = ((ScreenSize.Y - 1) * 0.5) - InPos.Y;
+	}
+
 
 	FORCEINLINE ScreenPoint GetHalfSize() const
 	{

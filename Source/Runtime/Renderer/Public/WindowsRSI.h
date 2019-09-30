@@ -8,8 +8,13 @@
 class WindowsRSI : public WindowsGDI, public RenderingSoftwareInterface
 {
 public:
+	
+	const int *IndexBuffer = nullptr;
+	VertexData *VertexBuffer = nullptr;
+
 	WindowsRSI() { };
 	~WindowsRSI() { Shutdown(); }
+
 
 public:
 	virtual void Init(const bool InbSRGBColorSpace = true) override;
@@ -23,6 +28,14 @@ public:
 	virtual void EndFrame() override;
 	virtual void DrawScreenPoint(const ScreenPoint& InScreenPos, const LinearColor& InColor) override;
 
-private:
 
+	virtual void SetIndexBuffer(const int *InIndexData) override;
+	virtual void SetVertexBuffer(VertexData *InvertexData) override;
+	virtual void DrawPrimitive(UINT InVertexSize, UINT InIndexSize) override;
+
+	virtual void DrawVerticalLine(int InX, const LinearColor & InColor) override;
+	virtual void DrawHorizontalLine(int InY, const LinearColor & InColor) override;
+
+
+private:
 };

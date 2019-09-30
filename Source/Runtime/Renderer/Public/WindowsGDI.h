@@ -44,5 +44,9 @@ protected:
 	Color32* ScreenBuffer = nullptr;
 	float* DepthBuffer = nullptr;
 	Color32 CurrentColor;
+
 	ScreenPoint ScreenSize;
+	ScreenPoint TopLeftPoint;
+	ScreenPoint BottomRightPoint;
+
 };

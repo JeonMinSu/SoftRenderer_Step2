@@ -25,7 +25,7 @@ public:
 	void Initialize();
 	void Shutdown();
 	void Update();
-	bool isPointInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 p);
+	//bool isPointInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 p);
 
 private:
 	SoftRenderer() { }
