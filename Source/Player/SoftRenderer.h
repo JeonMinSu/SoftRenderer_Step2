@@ -34,4 +34,6 @@ private:
 	RenderMode CurrentRenderMode = RenderMode::TWO;
 
 	WindowsRSI* RSI = nullptr;
+
+	UINT32 screenSize;
 };

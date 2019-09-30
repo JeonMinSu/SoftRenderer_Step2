@@ -8,6 +8,8 @@ void SoftRenderer::Initialize()
 	if (RSI != nullptr)
 	{
 		RSI->Init(false);
+
+		screenSize = DisplaySetting::Inst().GetSize().X * DisplaySetting::Inst().GetSize().Y;
 	}
 }
 
@@ -26,12 +28,9 @@ void SoftRenderer::Update()
 	if (RSI != nullptr)
 	{
 		// Render Start
-		//RSI->BeginFrame();
+		RSI->BeginFrame();
 		RSI->Clear(LinearColor(0.125f, 0.5f, 1.f, 1.f));
 
-
-		RSI->DrawVerticalLine(0, LinearColor(1.0f, 0.0f, 0.0f, 1.0f));
-		RSI->DrawHorizontalLine(0, LinearColor(1.0f, 0.0f, 0.0f, 1.0f));
 
 		ScreenPoint screenSize = DisplaySetting::Inst().GetSize();
 		static int gridSize = 10;
@@ -39,8 +38,16 @@ void SoftRenderer::Update()
 		int HalfX = Math::FloorToInt(((float)screenSize.X - 1.f) * 0.5f);
 		int HalfY = Math::FloorToInt(((float)screenSize.Y - 1.f) * 0.5f);
 
-		for (int ix = 0; ix < screenSize.X; ix+gridSize)
+		for (int x = gridSize; x < HalfX; x += gridSize)
 		{
+			RSI->DrawVerticalLine(x, LinearColor(0.5, 0.5f, 0.5f, 1.0f));
+			RSI->DrawVerticalLine(-x, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
+		}
+
+		for (int y = gridSize; y < HalfY; y += gridSize)
+		{
+			RSI->DrawHorizontalLine(y, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
+			RSI->DrawHorizontalLine(-y, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
 
 		}
 

@@ -34,7 +34,6 @@ void WindowsGDI::InitializeGDI(const ScreenPoint& InDisplaySize, const bool InbS
 	bSRGBColorSpace = InbSRGBColorSpace;
 	
 	ScreenPoint half(ScreenSize.X * 0.5f , ScreenSize.Y * 0.5f);
-	TopLeftPoint = ScreenPoint(-half.X + 1, half.Y - 1);
 
 	BITMAPINFO bmi;
 	memset(&bmi, 0, sizeof(BITMAPINFO));

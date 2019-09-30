@@ -84,37 +84,27 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 
 void WindowsRSI::DrawVerticalLine(int InX, const LinearColor & InColor)
 {
-/*
-	X = InPos.X + ((ScreenSize.X - 1) * 0.5);
-	Y = ((ScreenSize.Y - 1) * 0.5) - InPos.Y;*/
+	Color32 color = InColor.ToColor32();
+	Color32* dest = ScreenBuffer;
 
-	Color32 Color = InColor.ToColor32();
-
-	if (ScreenBuffer == NULL || !bGDIInitialized)
-	{
-		return;
-	}
-	Color32 *dest = ScreenBuffer;
 	int xIndex = InX + Math::FloorToInt(((float)ScreenSize.X - 1.f) * 0.5f);
-
+	if (xIndex < 0) return;
 	for (int y = 0; y < ScreenSize.Y; ++y)
 	{
-		*(dest + xIndex) = Color;
-		xIndex += ScreenSize.X;
+		*(dest + xIndex) = color;
+		dest += ScreenSize.X;
 	}
-
-
-	return;
 }
 
 void WindowsRSI::DrawHorizontalLine(int InY, const LinearColor & InColor)
 {
-	Color32 Color = InColor.ToColor32();
-	Color32 *dest = ScreenBuffer + (TopLeftPoint.Y - InY) * ScreenSize.X;
-
+	Color32 color = InColor.ToColor32();
+	Color32* dest = ScreenBuffer;
+	int startIndex = Math::FloorToInt(((float)ScreenSize.Y - 1.f) * 0.5f) - InY;
+	dest = dest + startIndex * ScreenSize.X;
 	for (int x = 0; x < ScreenSize.X; x++)
 	{
-		*dest = Color;
+		*dest = color;
 		dest++;
 	}
 }

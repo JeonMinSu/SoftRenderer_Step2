@@ -46,7 +46,5 @@ protected:
 	Color32 CurrentColor;
 
 	ScreenPoint ScreenSize;
-	ScreenPoint TopLeftPoint;
-	ScreenPoint BottomRightPoint;
 
 };
