@@ -33,6 +33,8 @@ public:
 	virtual void SetVertexBuffer(VertexData *InvertexData) override;
 	virtual void DrawPrimitive(UINT InVertexSize, UINT InIndexSize) override;
 
+
+	virtual void DrawBresenhamLine(const Vector2 &InStartPos, const Vector2 &InEndPos, const LinearColor &InColor) override;
 	virtual void DrawVerticalLine(int InX, const LinearColor & InColor) override;
 	virtual void DrawHorizontalLine(int InY, const LinearColor & InColor) override;
 

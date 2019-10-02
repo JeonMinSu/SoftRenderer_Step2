@@ -29,8 +29,10 @@ void SoftRenderer::Update()
 	{
 		// Render Start
 		RSI->BeginFrame();
-		RSI->Clear(LinearColor(0.125f, 0.5f, 1.f, 1.f));
+		RSI->Clear(LinearColor(0.25f, 0.25f, 0.25f, 1.f));
 
+		RSI->DrawVerticalLine(0, LinearColor(1.0f, 0.0f, 0.0f, 1.0f));
+		RSI->DrawHorizontalLine(0, LinearColor(1.0f, 0.0f, 0.0f, 1.0f));
 
 		ScreenPoint screenSize = DisplaySetting::Inst().GetSize();
 		static int gridSize = 10;
@@ -38,39 +40,51 @@ void SoftRenderer::Update()
 		int HalfX = Math::FloorToInt(((float)screenSize.X - 1.f) * 0.5f);
 		int HalfY = Math::FloorToInt(((float)screenSize.Y - 1.f) * 0.5f);
 
-		for (int x = gridSize; x < HalfX; x += gridSize)
+		for (int x = gridSize; x <= HalfX; x += gridSize)
 		{
 			RSI->DrawVerticalLine(x, LinearColor(0.5, 0.5f, 0.5f, 1.0f));
 			RSI->DrawVerticalLine(-x, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
 		}
 
-		for (int y = gridSize; y < HalfY; y += gridSize)
+		for (int y = gridSize; y <= HalfY; y += gridSize)
 		{
 			RSI->DrawHorizontalLine(y, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
 			RSI->DrawHorizontalLine(-y, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
-
 		}
 
+		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(20.0f, 100.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(100.0f, 20.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
 
-		VertexData vertex[3];
+		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(-100.0f, 20.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(-20.0f, 100.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
 
-		vertex[0].Position = Vector2(0.0f, 0.0f);
-		vertex[0].Color = LinearColor(1.0f, 0.0f, 0.0f);
+		RSI->DrawBresenhamLine(Vector2(-20.0f, -100.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(-100.0f, -20.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
 
-		vertex[1].Position = Vector2(150.0f, -150.0f);
-		vertex[1].Color = LinearColor(0.0f, 1.0f, 0.0f);
+		RSI->DrawBresenhamLine(Vector2(20.0f, -100.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(100.0f, -20.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
 
-		vertex[2].Position = Vector2(-150.0f, -150.0f);
-		vertex[2].Color = LinearColor(0.0f, 0.0f, 1.0f);
 
-		int i[3];
-		i[0] = 0;
-		i[1] = 1;
-		i[2] = 2;
 
-		RSI->SetVertexBuffer(vertex);
-		RSI->SetIndexBuffer(i);
-		RSI->DrawPrimitive(3, 3);
+		//VertexData vertex[3];
+
+		//vertex[0].Position = Vector2(0.0f, 0.0f);
+		//vertex[0].Color = LinearColor(1.0f, 0.0f, 0.0f);
+
+		//vertex[1].Position = Vector2(150.0f, -150.0f);
+		//vertex[1].Color = LinearColor(0.0f, 1.0f, 0.0f);
+
+		//vertex[2].Position = Vector2(-150.0f, -150.0f);
+		//vertex[2].Color = LinearColor(0.0f, 0.0f, 1.0f);
+
+		//int i[3];
+		//i[0] = 0;
+		//i[1] = 1;
+		//i[2] = 2;
+
+		//RSI->SetVertexBuffer(vertex);
+		//RSI->SetIndexBuffer(i);
+		//RSI->DrawPrimitive(3, 3);
 
 		// Render Finish
 		RSI->EndFrame();

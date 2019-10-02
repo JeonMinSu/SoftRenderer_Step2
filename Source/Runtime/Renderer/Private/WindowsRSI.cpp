@@ -82,6 +82,121 @@ void WindowsRSI::DrawPrimitive(UINT InVertexSize, UINT InIndexSize)
 
 }
 
+void WindowsRSI::DrawBresenhamLine(const Vector2 & InStartPos, const Vector2 & InEndPos, const LinearColor & InColor)
+{
+
+	int W = InEndPos.X - InStartPos.X;
+	int H = InEndPos.Y - InStartPos.Y;
+
+	int x = InStartPos.X;
+	int y = InStartPos.Y;
+
+	int F, dF1, dF2;
+
+	if (W < 0)
+	{
+		if ((W * W) <= (H * H))
+		{
+			F = 2 * W + H;
+
+			dF1 = 2 * W;
+			dF2 = 2 * (W + H);
+
+			for (y = InStartPos.Y; y <= InEndPos.Y; y++)
+			{
+				DrawScreenPoint(ScreenPoint(x, y), InColor.ToColor32());
+
+				if (F < 0)
+				{
+					F -= dF1;
+				}
+				else
+				{
+					F -= dF2;
+					--x;
+				}
+			}
+
+
+		}
+		else
+		{
+			F = 2 * H + W;
+
+			dF1 = 2 * H;
+			dF2 = 2 * (H + W);
+
+
+			for (x = InStartPos.X; x > InEndPos.X; x--)
+			{
+				DrawScreenPoint(ScreenPoint(x, y), InColor.ToColor32());
+
+				if (F < 0)
+				{
+					F += dF1;
+				}
+				else
+				{
+					F += dF2;
+					y++;
+				}
+			}
+
+
+		}
+	}
+	else
+	{
+		if (W <= H)
+		{
+			F = 2 * W - H;
+
+			dF1 = 2 * W;
+			dF2 = 2 * (W - H);
+
+
+			for (y = InStartPos.Y; y <= InEndPos.Y; y++)
+			{
+				DrawScreenPoint(ScreenPoint(x, y), InColor.ToColor32());
+
+				if (F < 0)
+				{
+					F += dF1;
+				}
+				else
+				{
+					++x;
+					F += dF2;
+				}
+			}
+
+		}
+		else
+		{
+			F = 2 * H - W;
+
+			dF1 = 2 * H;
+			dF2 = 2 * (H - W);
+
+			for (x = InStartPos.X; x <= InEndPos.X; ++x)
+			{
+				DrawScreenPoint(ScreenPoint(x, y), InColor.ToColor32());
+				if (F < 0)
+				{
+					F += dF1;
+				}
+				else
+				{
+					++y;
+					F += dF2;
+				}
+			}
+		}
+
+	}
+
+}
+
 void WindowsRSI::DrawVerticalLine(int InX, const LinearColor & InColor)
 {
 	Color32 color = InColor.ToColor32();
