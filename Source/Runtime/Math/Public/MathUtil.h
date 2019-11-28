@@ -1,8 +1,8 @@
 #pragma once
 
 #include <intrin.h>
+#include <math.h>
 #include "CoreDefinition.h"
-#include "Vector2.h"
 
 struct Math
 {
@@ -10,6 +10,8 @@ struct Math
 	static const float TwoPI;
 	static const float HalfPI;
 	static const float InvPI;
+	static const int IntMin;
+	static const int IntMax;
 
 	static FORCEINLINE int TruncToInt(float InFloat)
 	{
@@ -21,6 +23,7 @@ struct Math
 		// Note: the x2 is to workaround the rounding-to-nearest-even-number issue when the fraction is .5
 		return _mm_cvt_ss2si(_mm_set_ss(InFloat + InFloat + 0.5f)) >> 1;
 	}
+
 	static FORCEINLINE int FloorToInt(float InFloat)
 	{
 		return TruncToInt(floorf(InFloat));
@@ -30,7 +33,6 @@ struct Math
 	{
 		return TruncToInt(ceilf(InFloat));
 	}
-
 
 	template<class T>
 	static constexpr FORCEINLINE T Square(const T InNum)

@@ -1,113 +1,159 @@
-#include "WindowsPrecompiled.h"
+
+#include "Precompiled.h"
 #include "SoftRenderer.h"
-#include "WindowsRSI.h"
 
-void SoftRenderer::Initialize()
+SoftRenderer::SoftRenderer(RenderingSoftwareInterface* InRSI) : RSI(InRSI)
 {
-	RSI = new WindowsRSI();
-	if (RSI != nullptr)
-	{
-		RSI->Init(false);
+}
 
-		screenSize = DisplaySetting::Inst().GetSize().X * DisplaySetting::Inst().GetSize().Y;
+void SoftRenderer::OnTick()
+{
+	if (!IsAllInitialized)
+	{
+		// Init Query Performance Timer
+		if(PerformanceInitFunc && PerformanceMeasureFunc)
+		{
+			CyclesPerMilliSeconds = PerformanceInitFunc();
+			IsPerformanceCheckInitialized = true;
+		}
+		else
+		{
+			return;
+		}
+
+		// Init RSI
+		if (CurrentScreenSize.HasZero())
+		{
+			return;
+		}
+
+		if (!RSI->Init(CurrentScreenSize))
+		{
+			return;
+		}
+
+		IsRendererInitialized = true;
+
+		// Check Input Binding
+		if (InputManager.GetXAxis && InputManager.GetYAxis && InputManager.SpacePressed)
+		{
+			IsInputInitialized = true;
+		}
+		else
+		{
+			return;
+		}
+
+		IsAllInitialized = IsRendererInitialized && IsPerformanceCheckInitialized && IsInputInitialized;
+		if (IsAllInitialized)
+		{
+			BindImplClass();
+		}
+	}
+	else
+	{
+		PreUpdate();
+		Update();
+		PostUpdate();
+	}
+}
+
+void SoftRenderer::OnResize(const ScreenPoint& InNewScreenSize)
+{
+	CurrentScreenSize = InNewScreenSize;
+
+	if (IsRendererInitialized)
+	{
+		RSI->Init(InNewScreenSize);
+	}
+
+	if (IsImplBinded)
+	{
+		Impl2D.reset();
+		Impl2D = std::make_unique<SoftRendererImpl2D>(this);
 	}
 }
 
 void SoftRenderer::Shutdown()
 {
-	if (RSI != nullptr && RSI->IsIntialized())
+	RSI->Shutdown();
+}
+
+void SoftRenderer::PreUpdate()
+{
+	FrameTimeStamp = PerformanceMeasureFunc();
+	if (FrameCount == 0)
 	{
-		RSI->Shutdown();
-		delete RSI;
-		RSI = nullptr;
+		StartTimeStamp = FrameTimeStamp;
+	}
+
+	// Clear Background
+	RSI->Clear(LinearColor::White);
+}
+
+void SoftRenderer::PostUpdate()
+{
+	// Unload Level
+	RenderFrame();
+
+	// Render Finish
+	RSI->EndFrame();
+
+	// Measure Performance
+	FrameCount++;
+	long long currentTimeStamp = PerformanceMeasureFunc();
+	LONGLONG frameCycles = currentTimeStamp - FrameTimeStamp;
+	LONGLONG elapsedCycles = currentTimeStamp - StartTimeStamp;
+	FrameTime = frameCycles / CyclesPerMilliSeconds;
+	ElapsedTime = elapsedCycles / CyclesPerMilliSeconds;
+	FrameFPS = FrameTime == 0.f ? 0.f : 1000.f / FrameTime;
+	AverageFPS = ElapsedTime == 0.f ? 0.f : 1000.f / ElapsedTime * FrameCount;
+}
+
+void SoftRenderer::RenderFrame()
+{
+	if (IsImplBinded)
+	{
+		RenderFrameFunc();
 	}
 }
 
 void SoftRenderer::Update()
 {
-	if (RSI != nullptr)
+	if (IsImplBinded)
 	{
-		// Render Start
-		RSI->BeginFrame();
-		RSI->Clear(LinearColor(0.25f, 0.25f, 0.25f, 1.f));
-
-		RSI->DrawVerticalLine(0, LinearColor(1.0f, 0.0f, 0.0f, 1.0f));
-		RSI->DrawHorizontalLine(0, LinearColor(1.0f, 0.0f, 0.0f, 1.0f));
-
-		ScreenPoint screenSize = DisplaySetting::Inst().GetSize();
-		static int gridSize = 10;
-
-		int HalfX = Math::FloorToInt(((float)screenSize.X - 1.f) * 0.5f);
-		int HalfY = Math::FloorToInt(((float)screenSize.Y - 1.f) * 0.5f);
-
-		for (int x = gridSize; x <= HalfX; x += gridSize)
-		{
-			RSI->DrawVerticalLine(x, LinearColor(0.5, 0.5f, 0.5f, 1.0f));
-			RSI->DrawVerticalLine(-x, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
-		}
-
-		for (int y = gridSize; y <= HalfY; y += gridSize)
-		{
-			RSI->DrawHorizontalLine(y, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
-			RSI->DrawHorizontalLine(-y, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
-		}
-
-		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(50.0f, 100.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(100.0f, 50.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-
-		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(-100.0f, 50.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(-50.0f, 100.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-
-		RSI->DrawBresenhamLine(Vector2(-50.0f, -100.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-		RSI->DrawBresenhamLine(Vector2(-100.0f, -50.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-
-		RSI->DrawBresenhamLine(Vector2(50.0f, -100.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-		RSI->DrawBresenhamLine(Vector2(100.0f, -50.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-
-
-
-		//VertexData vertex[3];
-
-		//vertex[0].Position = Vector2(0.0f, 0.0f);
-		//vertex[0].Color = LinearColor(1.0f, 0.0f, 0.0f);
-
-		//vertex[1].Position = Vector2(150.0f, -150.0f);
-		//vertex[1].Color = LinearColor(0.0f, 1.0f, 0.0f);
-
-		//vertex[2].Position = Vector2(-150.0f, -150.0f);
-		//vertex[2].Color = LinearColor(0.0f, 0.0f, 1.0f);
-
-		//int i[3];
-		//i[0] = 0;
-		//i[1] = 1;
-		//i[2] = 2;
-
-		//RSI->SetVertexBuffer(vertex);
-		//RSI->SetIndexBuffer(i);
-		//RSI->DrawPrimitive(3, 3);
-
-		// Render Finish
-		RSI->EndFrame();
+		UpdateFunc(FrameTime / 1000.f);
 	}
 }
 
-//bool SoftRenderer::isPointInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 p)
-//{
-//	float s = 0;
-//	float t = 0;
-//
-//	Vector2 w = p - a;
-//	Vector2 u = b - a;
-//	Vector2 v = c - a;
-//
-//	s = ((u.Dot(w) * v.Dot(v)) - (w.Dot(v) * u.Dot(v))) / ((u.Dot(u) * v.Dot(v)) - (u.Dot(v) * u.Dot(v)));
-//	t = ((w.Dot(v) * u.Dot(u)) - (u.Dot(w) * u.Dot(v))) / ((u.Dot(u) * v.Dot(v)) - (u.Dot(v) * u.Dot(v)));
-//
-//	if ((0 <= s && s <= 1) && (0 <= t && t <= 1))
-//	{
-//		return true;
-//	}
-//
-//	return false;
-//}
+void SoftRenderer::BindImplClass()
+{
+	//BindImpl2DClass();
+	BindImpl3DClass();
+}
+
+void SoftRenderer::BindImpl2DClass()
+{
+	Impl2D = std::make_unique<SoftRendererImpl2D>(this);
+	if (nullptr != Impl2D)
+	{
+		using namespace std::placeholders;
+		RenderFrameFunc = std::bind(&SoftRendererImpl2D::RenderFrameImpl, Impl2D.get());
+		UpdateFunc = std::bind(&SoftRendererImpl2D::UpdateImpl, Impl2D.get(), _1);
+		IsImplBinded = true;
+	}
+}
+
+void SoftRenderer::BindImpl3DClass()
+{
+	Impl3D = std::make_unique<SoftRendererImpl3D>(this);
+	if (nullptr != Impl3D)
+	{
+		using namespace std::placeholders;
+		RenderFrameFunc = std::bind(&SoftRendererImpl3D::RenderFrameImpl, Impl3D.get());
+		UpdateFunc = std::bind(&SoftRendererImpl3D::UpdateImpl, Impl3D.get(), _1);
+		IsImplBinded = true;
+	}
+}
+
 

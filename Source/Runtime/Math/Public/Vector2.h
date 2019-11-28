@@ -5,11 +5,14 @@
 struct Vector2
 {
 public:
-	Vector2() { }
-	constexpr FORCEINLINE Vector2(float InX, float InY) : X(InX), Y(InY) { }
+	Vector2() = default;
+	FORCEINLINE Vector2(int InX, int InY) : X((float)InX), Y((float)InY) { }
+	FORCEINLINE Vector2(float InX, float InY) : X(InX), Y(InY) { }
 
 	FORCEINLINE float SizeSquared() const;
 	FORCEINLINE float Dot(const Vector2& InV) const;
+	FORCEINLINE Vector2 Normalize() const;
+
 	FORCEINLINE bool IsZero() const
 	{
 		return X == 0.f && Y == 0.f;
@@ -80,4 +83,20 @@ FORCEINLINE float Vector2::operator[](int InIndex) const
 FORCEINLINE float &Vector2::operator[](int InIndex)
 {
 	return ((float *)this)[InIndex];
+}
+
+FORCEINLINE Vector2 Vector2::Normalize() const
+{
+	float squareSum = SizeSquared();
+	if (squareSum == 1.f)
+	{
+		return *this;
+	}
+	else if (squareSum == 0.f)
+	{
+		return Vector2::Zero;
+	}
+
+	float invLength = 1 / sqrtf(squareSum);
+	return Vector2(X * invLength, Y * invLength);
 }
