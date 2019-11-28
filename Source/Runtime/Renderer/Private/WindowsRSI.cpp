@@ -141,8 +141,6 @@ void WindowsRSI::DrawBresenhamLine(const Vector2 & InStartPos, const Vector2 & I
 					y++;
 				}
 			}
-
-
 		}
 	}
 	else
@@ -192,9 +190,7 @@ void WindowsRSI::DrawBresenhamLine(const Vector2 & InStartPos, const Vector2 & I
 				}
 			}
 		}
-
 	}
-
 }
 
 void WindowsRSI::DrawVerticalLine(int InX, const LinearColor & InColor)

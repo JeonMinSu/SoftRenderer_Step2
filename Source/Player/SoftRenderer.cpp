@@ -52,17 +52,17 @@ void SoftRenderer::Update()
 			RSI->DrawHorizontalLine(-y, LinearColor(0.5f, 0.5f, 0.5f, 1.0f));
 		}
 
-		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(20.0f, 100.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(100.0f, 20.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(50.0f, 100.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(100.0f, 50.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
 
-		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(-100.0f, 20.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(-20.0f, 100.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(-100.0f, 50.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(0.0f, 0.0f), Vector2(-50.0f, 100.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
 
-		RSI->DrawBresenhamLine(Vector2(-20.0f, -100.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-		RSI->DrawBresenhamLine(Vector2(-100.0f, -20.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(-50.0f, -100.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(-100.0f, -50.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
 
-		RSI->DrawBresenhamLine(Vector2(20.0f, -100.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
-		RSI->DrawBresenhamLine(Vector2(100.0f, -20.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(50.0f, -100.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
+		RSI->DrawBresenhamLine(Vector2(100.0f, -50.0f), Vector2(0.0f, 0.0f), LinearColor(1.0f, 1.0f, 0.0f, 1.0f));
 
 
 
