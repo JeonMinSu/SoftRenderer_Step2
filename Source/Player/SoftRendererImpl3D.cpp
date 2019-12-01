@@ -223,7 +223,7 @@ void SoftRendererImpl3D::RenderFrameImpl()
 
 		// 1. Frustum 평면 구하기
 		Plane frustumPlanes[6] = {
-			Plane(Vector3::UnitZ, -D - Camera.GetNearZ()).Normalize(),            // 근평면의 방정식
+			Plane(Vector3::UnitZ, D - Camera.GetNearZ()).Normalize(),            // 근평면의 방정식
 			Plane(-Vector3::UnitZ, -D - Camera.GetFarZ()).Normalize(),         // 원평면의 방정식
 			Plane(Vector3(-1.0f , 0.0f, tanHalfFOV), D).Normalize(),       // 왼쪽 평면의 방정식
 			Plane(Vector3(1.0f, 0.0f, -tanHalfFOV), D).Normalize(), // 오른쪽 평면의 방정식
