@@ -217,7 +217,6 @@ void SoftRendererImpl3D::RenderFrameImpl()
 		// 게임 오브젝트의 메시를 둘러싼 구체의 반지름을 구함.
 		float r = g->GetMesh()->GetSphereArea().Radius * g->GetTransform().GetScale().GetMax();
 
-		//float PramaD = Camera.GetFarZ() - Camera.GetNearZ();
 		//d = -(ax1 + by1 + cz1)
 		float D = (viewPos.X + viewPos.Y + viewPos.Z);
 
